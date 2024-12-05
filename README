@@ -1,0 +1,9 @@
+#To build and deploy to registry
+
+docker build -t db-fetcher .
+docker run --rm -d -p 8080:8080 db-fetcher
+
+docker tag db-fetcher devblogs1/db-fetcher
+docker push devblogs1/db-fetcher
+
+docker run --rm -d -p 8080:8080 devblogs1/db-fetcher
