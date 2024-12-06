@@ -3,7 +3,25 @@
 docker build -t db-fetcher .
 docker run --rm -d -p 8080:8080 db-fetcher
 
-docker tag db-fetcher devblogs1/db-fetcher
-docker push devblogs1/db-fetcher
+docker ps
+docker exec -u root -it <hash> bash
+# add mysql client to container
+apt update
+apt-get install -y default-mysql-client
+exit
 
-docker run --rm -d -p 8080:8080 devblogs1/db-fetcher
+docker ps
+docker commit <hash>
+
+docker images
+docker tag <hash> db_fetcher_for_register
+docker tag db_fetcher_for_register devblogs1/db_fetcher
+
+docker push devblogs1/db_fetcher
+
+docker run --rm -d -p 8080:8080 devblogs1/db_fetcher
+
+#check mysql client in container
+docker ps
+docker exec -it <hash> bash
+mysql --host="HOST_NAME" --user="USER_NAME" --password="MYSQL_PASSWORD" --database="DB_NAME" -e "SELECT 1;"
