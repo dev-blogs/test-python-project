@@ -1,27 +1,50 @@
-#To build and deploy to registry
+#To build, deploy, run and test container from registry
 
+# 1 Clone git repository
+git clone https://github.com/dev-blogs/test-python-project.git
+cd test-python-project
+
+# 2 Build and run image
 docker build -t db-fetcher .
 docker run --rm -d -p 8080:8080 db-fetcher
 
-docker ps
-docker exec -u root -it <hash> bash
-# add mysql client to container
-apt update
-apt-get install -y default-mysql-client
-exit
+# 3 Change container
+    # 3.1 Enter into container
+    docker ps
+    docker exec -u root -it <hash> bash
 
+    # 3.2 add mysql client to container
+    apt update
+    apt-get install -y default-mysql-client
+    exit
+
+# 4 Save container's state in image
 docker ps
 docker commit <hash>
 
+# 5 Add tag to new created image
 docker images
 docker tag <hash> db_fetcher_for_register
 docker tag db_fetcher_for_register devblogs1/db_fetcher
 
+# 6 Login to docker registry
+docker login -u user
+
+# 7 Push image to docker registry
 docker push devblogs1/db_fetcher
 
-docker run --rm -d -p 8080:8080 devblogs1/db_fetcher
+# 8 Test image from docker registry
+    # 8.1 Stop and remove running container
+    docker ps
+    docker stop <hash>
 
-#check mysql client in container
+    # 8.2 Remove all images
+    docker rmi --force $(docker images -aq)
+
+    # 8.3 Run new created container stored in docker registry
+    docker run --rm -d -p 8080:8080 devblogs1/db_fetcher
+
+# 9 Check mysql client inside container
 docker ps
 docker exec -it <hash> bash
 mysql --host="HOST_NAME" --user="USER_NAME" --password="MYSQL_PASSWORD" --database="DB_NAME" -e "SELECT 1;"
