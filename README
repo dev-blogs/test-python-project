@@ -13,7 +13,7 @@ docker run --rm -d -p 8080:8080 db-fetcher
     docker ps
     docker exec -u root -it <hash> bash
 
-    # 3.2 add mysql client to container
+    # 3.2 Add mysql client to container
     apt update
     apt-get install -y default-mysql-client
     exit
